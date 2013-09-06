@@ -17,7 +17,7 @@ class GMailProvider(ProviderBase):
 
     def __init__(self):
         if GMailProvider.__default:
-           raise GMailProvider.__default
+            raise GMailProvider.__default
         ProviderBase.__init__(self, "GMail")
 
     @staticmethod
@@ -113,7 +113,7 @@ class GMailProvider(ProviderBase):
         password = self.builder.get_object("password_entry").get_text()
         if not account:
             props = {"name" : account_name, "provider_name" : self.get_name(),
-                "labels" : self.__get_labels()}
+                     "labels" : self.__get_labels()}
             account = AccountCacheMails(props, self)
             account.notifications = {}
         else:
@@ -160,7 +160,7 @@ class Mail:
 # Sax XML Handler
 class MailHandler(ContentHandler):
 
-	# Tags
+        # Tags
     TAG_FEED = "feed"
     TAG_FULLCOUNT = "fullcount"
     TAG_ENTRY = "entry"
@@ -266,4 +266,3 @@ class GmailAtom:
 
     def get_mails (self):
         return self.m.entries
-

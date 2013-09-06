@@ -1,5 +1,11 @@
 Milestone 0.X.0
 ===============
+[ ] Add support for messagingmenu api
+    [X] Add messagingmenu module
+    [ ] Show the main window when exec in desktop file is executed.
+
+Milestone 0.X.0
+===============
 [ ] Add facebook notifications of:
 	[ ] Photo tags
 	[ ] New friends request

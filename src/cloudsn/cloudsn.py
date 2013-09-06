@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 from . import logger
 from core import config, utils, notification
@@ -32,7 +32,7 @@ def start ():
         setup_locale_and_gettext()
     except Exception, e:
         logger.exception("Error loading the internationalitation: %s", e)
-    
+
     try:
         cr = Controller.get_instance()
         cr.start()
