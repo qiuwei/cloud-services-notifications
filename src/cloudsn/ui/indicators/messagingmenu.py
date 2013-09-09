@@ -40,40 +40,63 @@ class IndicatorApplet (Indicator):
 		#now indicator is not an object as in indicatorapplet, we can keep
 		#the id of it instead
 		acc.indicator = source_id
-		logger.debug("add indicator to account "+acc.get_name())
+		logger.debug("add new source to account "+acc.get_name())
 		acc.is_error_icon = False
-		logger.debug("Indicator created")
-
-
+		logger.debug("new source created")
+	
 	def update_account(self, acc):
-		#We had a previous error but now the update works.
+		logger.debug("update_account called")
 		if acc.is_error_icon:
-			#acc.indicator.set_property_icon("icon", acc.get_icon())
 			acc.is_error_icon = False
 		else:
-			if len(acc.get_new_unread_notifications()) > 0:
-				self.mmapp.draw_attention(acc.indicator)
-
-		if acc.get_total_unread() < 1:
-			self.mmapp.remove_attention(acc.indicator)
-
-		if self.mmapp.has_source(acc.indicator):
-			self.mmapp.set_source_count(acc.indicator, acc.get_total_unread())
+			if acc.indicator is not None: 
+				logger.debug("acc.indicator is not None")
+				#user didn't click on the source
+				if acc.get_total_unread() < 1:
+					logger.debug("acc get_total_unread is 0")
+					#but user has checked the email
+					self.mmapp.remove_attention(acc.indicator)
+					self.mmapp.remove_source(acc.indicator)
+					acc.indicator = None
+				else:
+					if len(acc.get_new_unread_notifications()) > 0:
+						#whether user checks or not, the number changed
+						self.mmapp.draw_attention(acc.indicator)
+						self.mmapp.set_source_count(acc.indicator, acc.get_total_unread())
+			else:
+				logger.debug("acc.indicator is None")
+				#user clicked on the source, which causes that the source is removed
+				#recreate the indicator/source
+				if len(acc.get_new_unread_notifications()) > 0:
+					self.create_indicator(acc)
+					self.mmapp.draw_attention(acc.indicator)
+					self.mmapp.set_source_count(acc.indicator, acc.get_total_unread())					
+						
+					
+				
 
 	def update_error(self, acc):
 		if not acc.is_error_icon:
 			#TODO acc.indicator.set_property_icon("icon", acc.get_icon())
 			acc.is_error_icon = True
-		self.mmapp.set_source_count(acc.indicator, 0)
+		if acc.indicator is not None:
+			# if there is already a source, we update the count
+			#Otherwise we do nothing
+			self.mmapp.set_source_count(acc.indicator, 0)
 
 	def remove_indicator(self, acc):
-		self.mmapp.remove_source(acc.indicator)
-		acc.indicator = None
+		logger.debug("remove_indicator called")
+		if acc.indicator is not None:
+			self.mmapp.remove_source(acc.indicator)
+			acc.indicator = None
 
 	def on_indicator_display_cb(self, mmapp, source_id):
 		"""
 		call back when user clicked on sources
 		"""
+		logger.debug("on_indicator_display_cb called")
 		for acc in self.am.get_accounts():
 			if acc.get_active() and acc.indicator == source_id:
 				acc.activate()
+				#we also clear the source in account
+				acc.indicator = None
