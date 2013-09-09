@@ -44,12 +44,26 @@ class IndicatorApplet (Indicator):
 		acc.is_error_icon = False
 		logger.debug("new source created")
 	
+	def _has_source(self, acc):
+		#as sources can also manually cleared by user
+		if acc.indicator is None:
+			return False
+		else:
+			if self.mmapp.has_source(acc.indicator):
+				return True
+			else:
+				acc.indicator = None
+				return False
+			
+	
 	def update_account(self, acc):
 		logger.debug("update_account called")
+		logger.debug("get_total_unread " + str(acc.get_total_unread()))
+		logger.debug("get_new_unread_notifications " + str(acc.get_new_unread_notifications()))
 		if acc.is_error_icon:
 			acc.is_error_icon = False
 		else:
-			if acc.indicator is not None: 
+			if self._has_source(acc): 
 				logger.debug("acc.indicator is not None")
 				#user didn't click on the source
 				if acc.get_total_unread() < 1:
@@ -79,14 +93,14 @@ class IndicatorApplet (Indicator):
 		if not acc.is_error_icon:
 			#TODO acc.indicator.set_property_icon("icon", acc.get_icon())
 			acc.is_error_icon = True
-		if acc.indicator is not None:
+		if self._has_source(acc):
 			# if there is already a source, we update the count
 			#Otherwise we do nothing
 			self.mmapp.set_source_count(acc.indicator, 0)
 
 	def remove_indicator(self, acc):
 		logger.debug("remove_indicator called")
-		if acc.indicator is not None:
+		if self._has_source(acc):
 			self.mmapp.remove_source(acc.indicator)
 			acc.indicator = None
 
