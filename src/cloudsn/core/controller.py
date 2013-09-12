@@ -23,7 +23,7 @@ class Controller (GObject.Object):
 
     def __init__(self):
         if Controller.__default:
-           raise Controller.__default
+            raise Controller.__default
 
         #Prevent various instances
         GObject.Object.__init__(self)
@@ -93,13 +93,13 @@ class Controller (GObject.Object):
         if self.timeout_id < 0:
             logger.debug("new source: "+str(self.timeout_id))
             self.timeout_id = GObject.timeout_add_seconds(self.interval,
-                                self.update_accounts, None)
+                                                          self.update_accounts, None)
         elif self.interval != old:
             logger.debug("removed source: "+str(self.timeout_id))
             GObject.source_remove(self.timeout_id)
             logger.debug("restart source: "+str(self.timeout_id))
             self.timeout_id = GObject.timeout_add_seconds(self.interval,
-                                self.update_accounts, None)
+                                                          self.update_accounts, None)
 
     def on_nm_state_changed (self):
         if self.nm.state == networkmanager.STATE_CONNECTED:
@@ -112,7 +112,7 @@ class Controller (GObject.Object):
     def set_active(self, active):
         if active and not self.get_active():
             self.timeout_id = GObject.timeout_add_seconds(self.interval,
-                                self.update_accounts, None)
+                                                          self.update_accounts, None)
             logger.debug("activated source: "+str(self.timeout_id))
         elif not active and self.get_active():
             GObject.source_remove(self.timeout_id)
@@ -172,13 +172,13 @@ class Controller (GObject.Object):
                 Gtk.main_iteration(False)
 
             if acc.get_provider().has_notifications() and \
-                    acc.get_show_notifications():
+               acc.get_show_notifications():
                 nots = acc.get_new_unread_notifications()
                 message = None
                 if len(nots) > max_notifications:
                     notification.notify(acc.get_name(),
-                        _("New messages: ") + str(len(nots)),
-                        acc.get_icon())
+                                        _("New messages: ") + str(len(nots)),
+                                        acc.get_icon())
 
                 if len(nots) > 0 and len(nots) <= max_notifications:
                     for n in nots:
@@ -187,8 +187,8 @@ class Controller (GObject.Object):
                         else:
                             icon = acc.get_icon()
                         notification.notify(acc.get_name() + ": " + n.sender,
-                            n.message,
-                            icon)
+                                            n.message,
+                                            icon)
 
             self.emit("account-checked", acc)
         except notification.NotificationError, ne:
@@ -198,8 +198,8 @@ class Controller (GObject.Object):
             if not acc.error_notified:
                 acc.error_notified = True
                 notification.notify (_("Error checking account %s") % (acc.get_name()),
-                    str(e),
-                    acc.get_icon())
+                                     str(e),
+                                     acc.get_icon())
                 self.im.get_indicator().update_error(acc)
             self.emit("account-check-error", acc)
         finally:
@@ -228,8 +228,8 @@ class Controller (GObject.Object):
             logger.exception ("Error starting the application: %s", e)
             try:
                 notification.notify(_("Application Error"),
-                    _("Error starting the application: %s") % (str(e)),
-                    utils.get_error_pixbuf())
+                                    _("Error starting the application: %s") % (str(e)),
+                                    utils.get_error_pixbuf())
             except Exception, e:
                 logger.exception ("Error notifying the error: %s", e)
 
@@ -242,4 +242,3 @@ class Controller (GObject.Object):
             Gtk.main()
         except KeyboardInterrupt:
             logger.info ('KeyboardInterrupt the main loop')
-

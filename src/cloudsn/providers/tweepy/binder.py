@@ -191,4 +191,3 @@ def bind_api(**config):
         _call.pagination_mode = 'page'
 
     return _call
-

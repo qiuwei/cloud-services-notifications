@@ -14,7 +14,7 @@ from cloudsn.core import config, utils
 
 enabled = False
 try:
-    #TODO Disabled because I need study how to do it with gtk-3 
+    #TODO Disabled because I need study how to do it with gtk-3
     raise Exception("Sound is unsuported by the moment")
     import pygst
     pygst.require("0.10")
@@ -53,4 +53,3 @@ class Sound:
         if message.type == gst.MESSAGE_EOS:
             self.player.set_state(gst.STATE_NULL)
             self.playing = False
-

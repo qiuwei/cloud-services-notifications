@@ -9,7 +9,7 @@ GNOME_KEYRING_ID = "gnomekeyring"
 class GnomeKeyring(Keyring):
 
     _KEYRING_NAME = 'cloudsn'
-    
+
     def __init__(self):
         self._protocol = "network"
         self._key = gk.ItemType.NETWORK_PASSWORD
@@ -18,7 +18,7 @@ class GnomeKeyring(Keyring):
         logger.debug("GnomeKeyring is available")
         self.loaded = False
         self.lock = threading.RLock()
-        
+
         if not self.loaded:
             (result, keyring_names) = gk.list_keyring_names_sync()
             if self._KEYRING_NAME not in keyring_names:
@@ -26,10 +26,10 @@ class GnomeKeyring(Keyring):
                 logger.debug("Creating keyring " + self._KEYRING_NAME)
                 gk.create_sync(self._KEYRING_NAME, None)
             self.loaded = True
-        
+
     def get_id(self):
         return GNOME_KEYRING_ID
-        
+
     def get_name(self):
         return _("Gnome keyring")
 
@@ -43,12 +43,12 @@ class GnomeKeyring(Keyring):
                 (result, items) = gk.find_items_sync(gk.ItemType.NETWORK_PASSWORD, attrs)
             except gk.NoMatchError, e:
                 items = list()
-                
+
             if len(items) < 1:
                 raise KeyringException("Cannot find the keyring data for the account %s" % (acc.get_name()))
-            
+
             logger.debug("items ok")
-            
+
             username = ''
             for attr in gk.Attribute.list_to_glist(items[0].attributes):
                 if attr.name == 'username':
@@ -79,7 +79,7 @@ class GnomeKeyring(Keyring):
             attrs = gk.Attribute.list_new()
             gk.Attribute.list_append_string(attrs, 'account_name', acc.get_name())
             gk.Attribute.list_append_string(attrs, 'username', credentials.username)
-            
+
             (result, id) = gk.item_create_sync(self._KEYRING_NAME, \
                  gk.ItemType.NETWORK_PASSWORD, acc.get_name(), attrs, credentials.password, True)
             if result != gk.Result.OK:

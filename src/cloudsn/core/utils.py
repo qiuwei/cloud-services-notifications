@@ -19,18 +19,18 @@ def show_url(url):
         logger.exception("Error in Gtk.show_uri: %s")
 
 def invoke_subprocess(cmdline):
-	setsid = getattr(os, 'setsid', None)
-	subprocess.Popen(cmdline, close_fds = True, preexec_fn = setsid)
+    setsid = getattr(os, 'setsid', None)
+    subprocess.Popen(cmdline, close_fds = True, preexec_fn = setsid)
 
 def get_default_mail_reader():
-	#client = gconf.client_get_default()
-	client = Gio.Settings.new()
-	cmd  = client.get_string("/desktop/gnome/url-handlers/mailto/command")
-	return cmd.split()[0]
+    #client = gconf.client_get_default()
+    client = Gio.Settings.new()
+    cmd  = client.get_string("/desktop/gnome/url-handlers/mailto/command")
+    return cmd.split()[0]
 
 def open_mail_reader():
-	cmdline = get_default_mail_reader()
-	invoke_subprocess(cmdline)
+    cmdline = get_default_mail_reader()
+    invoke_subprocess(cmdline)
 
 def mime_decode(str):
     strn, encoding = decode_header(str)[0]
@@ -67,13 +67,13 @@ def download_image_to_tmp(url):
 
     if os.path.exists(fullname):
         return fullname
-        
+
     f = urllib2.urlopen(url).read()
 
     fich = open(fullname, 'w+')
     fich.write(f)
     fich.close()
-    
+
     return fullname
 
 def download_image_to_pixbuf(url):
@@ -87,19 +87,18 @@ def execute_command(acc, command):
         return True
     else:
         return False
-    
+
 def replace_variables(acc, command):
     _command = command
     available_variables = {"${account_name}": "'" + acc.get_name().replace("'", "") + "'"}
     for variable in available_variables:
         _command = _command.replace(variable, available_variables[variable])
-        
+
     return _command
 
 def get_safe_filename(name):
     return "".join([x for x in name.lower() if x.isalpha() or x.isdigit()])
-    
+
 if __name__ == "__main__":
     print get_default_mail_reader()
     open_mail_reader()
-

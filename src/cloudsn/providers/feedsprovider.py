@@ -25,7 +25,7 @@ class FeedsProvider(ProviderUtilsBuilder):
 
     def __init__(self):
         if FeedsProvider.__default:
-           raise FeedsProvider.__default
+            raise FeedsProvider.__default
         ProviderUtilsBuilder.__init__(self, _("RSS news"), 'rss')
 
     @staticmethod
@@ -165,4 +165,3 @@ class FeedCache:
     def add_feed(self, feed_id, feed_read):
         self.last_num = self.last_num + 1
         self.feeds[feed_id] = Feed((self.last_num, feed_id, feed_read))
-

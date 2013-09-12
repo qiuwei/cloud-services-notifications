@@ -119,7 +119,7 @@ class Account:
             return utils.get_account_error_pixbuf(self)
         else:
             return self.get_provider().get_icon()
-            
+
     def get_gicon (self):
         if self.error_notified:
             return utils.get_account_error_gicon(self)
@@ -155,7 +155,7 @@ class AccountManager (GObject.Object):
 
     def __init__(self):
         if AccountManager.__default:
-           raise AccountManager.__default
+            raise AccountManager.__default
         GObject.Object.__init__(self)
         from cloudsn.core.provider import ProviderManager
         self.accounts = {}
@@ -243,4 +243,3 @@ class AccountManager (GObject.Object):
 
 def get_account_manager():
     return AccountManager.get_instance()
-

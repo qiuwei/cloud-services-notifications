@@ -15,7 +15,7 @@ class IdenticaProvider(ProviderUtilsBuilder):
     def __init__(self, name = "Identi.ca", id_provider = "identica", activate_url = "http://identi.ca"):
         ProviderUtilsBuilder.__init__(self, name, id_provider)
         self.activate_url = activate_url
-        
+
     @staticmethod
     def get_instance():
         if not IdenticaProvider.__default:
@@ -58,10 +58,10 @@ class IdenticaProvider(ProviderUtilsBuilder):
         auth = tweepy.BasicAuthHandler(credentials.username, credentials.password)
         api = tweepy.API(auth, "identi.ca",api_root="/api")
         return api
-        
+
     def update_account (self, account):
         api = self.get_api(account)
-        
+
         since_id = None
         if "since_id" in account and account["since_id"] != -1:
             since_id = account["since_id"]
@@ -89,11 +89,11 @@ class IdenticaProvider(ProviderUtilsBuilder):
         account.new_unread = news;
         account["since_id"] = messages[0].id
         GObject.idle_add(self.__save_account, account)
-        
+
     def __save_account(self, account):
         AccountManager.get_instance().save_account(account)
         return False
-        
+
     def get_message_icon(self,m):
         icon = None
         try:
@@ -110,4 +110,3 @@ class IdenticaAccount (AccountCacheMails):
 
     def get_total_unread (self):
         return 0
-

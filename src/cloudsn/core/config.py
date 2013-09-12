@@ -84,7 +84,7 @@ class SettingsController(GObject.Object):
 
     def __init__(self):
         if SettingsController.__default:
-           raise SettingsController.__default
+            raise SettingsController.__default
         GObject.Object.__init__(self)
         self.ensure_config()
         self.prefs = self.config_to_dict(self.config_prefs)
@@ -198,4 +198,3 @@ def get_startup_file_dir():
 
 def get_startup_file_path():
     return abspath(join(get_startup_file_dir(), "cloudsn.desktop"))
-

@@ -46,5 +46,3 @@ def start ():
 if __name__ == "__main__":
     logger.debug("0")
     start()
-
-

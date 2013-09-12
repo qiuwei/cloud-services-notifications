@@ -21,7 +21,7 @@ class ImapProvider(ProviderBase):
 
     def __init__(self):
         if ImapProvider.__default:
-           raise ImapProvider.__default
+            raise ImapProvider.__default
         ProviderBase.__init__(self, "Imap")
 
     @staticmethod
@@ -166,59 +166,58 @@ class ImapBoxConnectionError(Exception): pass
 class ImapBoxAuthError(Exception): pass
 
 class ImapBox:
-	def __init__(self, host, user, password,
-			port = 143, ssl = False,
-			use_default_mbox = True,
-			mbox_dir = None):
-		self.user = user
-		self.password = password
-		self.port = int(port)
-		self.host = host
-		self.ssl = ssl
-		self.use_default_mbox = use_default_mbox
-		self.mbox_dir = mbox_dir
+    def __init__(self, host, user, password,
+                    port = 143, ssl = False,
+                    use_default_mbox = True,
+                    mbox_dir = None):
+        self.user = user
+        self.password = password
+        self.port = int(port)
+        self.host = host
+        self.ssl = ssl
+        self.use_default_mbox = use_default_mbox
+        self.mbox_dir = mbox_dir
 
-		self.mbox = None
+        self.mbox = None
 
-	def __connect(self):
-		if not self.ssl:
-			self.mbox = imaplib.IMAP4(self.host, self.port)
-		else:
-			self.mbox = imaplib.IMAP4_SSL(self.host, self.port)
+    def __connect(self):
+        if not self.ssl:
+            self.mbox = imaplib.IMAP4(self.host, self.port)
+        else:
+            self.mbox = imaplib.IMAP4_SSL(self.host, self.port)
 
-		self.mbox.login(self.user, self.password)
+        self.mbox.login(self.user, self.password)
 
-	def get_mails(self):
+    def get_mails(self):
 
-		try:
-			self.__connect()
-		except ImapBoxConnectionError:
-			raise ImapBoxConnectionError()
-		except ImapBoxAuthError:
-			raise ImapBoxAuthError()
+        try:
+            self.__connect()
+        except ImapBoxConnectionError:
+            raise ImapBoxConnectionError()
+        except ImapBoxAuthError:
+            raise ImapBoxAuthError()
 
-		mails = []
-		try:
-			if self.use_default_mbox:
-				result, message = self.mbox.select(readonly=1)
-			else:
-				result, message = self.mbox.select(self.mbox_dir, readonly=1)
-			if result != 'OK':
-				raise Exception, message
+        mails = []
+        try:
+            if self.use_default_mbox:
+                result, message = self.mbox.select(readonly=1)
+            else:
+                result, message = self.mbox.select(self.mbox_dir, readonly=1)
+            if result != 'OK':
+                raise Exception, message
 
-			# retrieve only unseen messages
-			typ, data = self.mbox.search(None, 'UNSEEN')
-			for num in data[0].split():
-				# fetch only needed fields
-				f = self.mbox.fetch(num, '(BODY.PEEK[HEADER.FIELDS (SUBJECT FROM MESSAGE-ID)])')
-				hp = HeaderParser()
-				m = hp.parsestr(f[1][0][1])
-				sub = utils.mime_decode(m['subject'])
-				fr = utils.mime_decode(m['from'])
-				mails.append([m['Message-ID'], sub, fr])
-		except Exception, e:
-			print str(e)
+            # retrieve only unseen messages
+            typ, data = self.mbox.search(None, 'UNSEEN')
+            for num in data[0].split():
+                # fetch only needed fields
+                f = self.mbox.fetch(num, '(BODY.PEEK[HEADER.FIELDS (SUBJECT FROM MESSAGE-ID)])')
+                hp = HeaderParser()
+                m = hp.parsestr(f[1][0][1])
+                sub = utils.mime_decode(m['subject'])
+                fr = utils.mime_decode(m['from'])
+                mails.append([m['Message-ID'], sub, fr])
+        except Exception, e:
+            print str(e)
 
-		self.mbox.logout()
-		return mails
-
+        self.mbox.logout()
+        return mails

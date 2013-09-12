@@ -49,7 +49,7 @@ class KeyringManager:
             self.__add_manager (Base64Keyring())
         except Exception, e:
             logger.exception("Cannot load base64 keyring: %s", e)
-            
+
         try:
             from keyrings.gkeyring import GnomeKeyring
             self.__add_manager (GnomeKeyring())
@@ -106,4 +106,3 @@ class KeyringException(Exception): pass
 
 def get_keyring():
     return KeyringManager.get_instance().get_manager()
-

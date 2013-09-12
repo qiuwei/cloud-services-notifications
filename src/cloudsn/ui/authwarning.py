@@ -20,7 +20,7 @@ def check_auth_configuration():
     prefs = conf.get_prefs()
     if AUTH_DONT_ASK_KEY in prefs and get_boolean(prefs[AUTH_DONT_ASK_KEY]) == True:
         return
-    
+
     if get_keyring().get_id() == gkeyring.GNOME_KEYRING_ID:
         return
 
@@ -47,4 +47,3 @@ in the preferences dialog.
     if checkbox.get_active():
         conf.set_pref (AUTH_DONT_ASK_KEY, True)
         conf.save_prefs()
-

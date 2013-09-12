@@ -15,7 +15,7 @@ class GReaderProvider(ProviderUtilsBuilder):
 
     def __init__(self):
         if GReaderProvider.__default:
-           raise GReaderProvider.__default
+            raise GReaderProvider.__default
         ProviderUtilsBuilder.__init__(self, "Google Reader", "greader")
 
     @staticmethod
@@ -87,69 +87,68 @@ class GReaderProvider(ProviderUtilsBuilder):
 
 class GreaderAtom:
 
-	auth_url = "https://www.google.com/accounts/ClientLogin"
-	reader_url = "https://www.google.com/reader/api/0/unread-count?%s"
+    auth_url = "https://www.google.com/accounts/ClientLogin"
+    reader_url = "https://www.google.com/reader/api/0/unread-count?%s"
 
-	def __init__(self, user, pswd):
-		self.username = user
-		self.password = pswd
-		# initialize authorization handler
-		_cproc = urllib2.HTTPCookieProcessor()
-		self.opener = urllib2.build_opener(_cproc)
-		urllib2.install_opener(self.opener)
+    def __init__(self, user, pswd):
+        self.username = user
+        self.password = pswd
+        # initialize authorization handler
+        _cproc = urllib2.HTTPCookieProcessor()
+        self.opener = urllib2.build_opener(_cproc)
+        urllib2.install_opener(self.opener)
 
-	def sendRequest(self):
-	    auth_req_data = urllib.urlencode({'Email': self.username,
-                                  'Passwd': self.password,
-                                  'service': 'reader'})
-        auth_req = urllib2.Request(self.auth_url, data=auth_req_data)
-        auth_resp_content = urllib2.urlopen(auth_req).read()
-        auth_resp_dict = dict(x.split('=') for x in auth_resp_content.split('\n') if x)
-        auth_token = auth_resp_dict["Auth"]
-        
-        # Create a cookie in the header using the SID 
-        header = {}
-        header['Authorization'] = 'GoogleLogin auth=%s' % auth_token
+    def sendRequest(self):
+        auth_req_data = urllib.urlencode({'Email': self.username,
+                              'Passwd': self.password,
+                              'service': 'reader'})
+    auth_req = urllib2.Request(self.auth_url, data=auth_req_data)
+    auth_resp_content = urllib2.urlopen(auth_req).read()
+    auth_resp_dict = dict(x.split('=') for x in auth_resp_content.split('\n') if x)
+    auth_token = auth_resp_dict["Auth"]
 
-        reader_req_data = urllib.urlencode({'all': 'true',
-                                            'output': 'xml'})
-        
-        reader_url = self.reader_url % (reader_req_data)
-        reader_req = urllib2.Request(reader_url, None, header)
-		return urllib2.urlopen(reader_req)
+    # Create a cookie in the header using the SID
+    header = {}
+    header['Authorization'] = 'GoogleLogin auth=%s' % auth_token
 
-	def parseDocument (self, data):
-		self.feeds=list()
+    reader_req_data = urllib.urlencode({'all': 'true',
+                                        'output': 'xml'})
 
-		def processObject (ob):
-			for c in ob.getElementsByTagName ("string"):
-				if c.getAttribute("name") == "id":
-					ftype, s, feed = c.childNodes[0].nodeValue.partition("/")
-					self.feeds.append({"type" : ftype,
-							   "feed" : feed})
-					break
+    reader_url = self.reader_url % (reader_req_data)
+    reader_req = urllib2.Request(reader_url, None, header)
+        return urllib2.urlopen(reader_req)
 
-			for c in ob.getElementsByTagName ("number"):
-				if c.getAttribute("name") == "count":
-					self.feeds[-1]["count"] = c.childNodes[0].nodeValue
-					break
+    def parseDocument (self, data):
+        self.feeds=list()
 
-		doc = xml.dom.minidom.parseString(data)
-		elist = doc.childNodes[0].getElementsByTagName("list")[0]
-		for e2 in elist.getElementsByTagName("object"):
-			processObject (e2)
+        def processObject (ob):
+            for c in ob.getElementsByTagName ("string"):
+                if c.getAttribute("name") == "id":
+                    ftype, s, feed = c.childNodes[0].nodeValue.partition("/")
+                    self.feeds.append({"type" : ftype,
+                                       "feed" : feed})
+                    break
 
-	def refreshInfo(self):
-		self.parseDocument (self.sendRequest().read())
+            for c in ob.getElementsByTagName ("number"):
+                if c.getAttribute("name") == "count":
+                    self.feeds[-1]["count"] = c.childNodes[0].nodeValue
+                    break
 
-	def getTotalUnread(self):
-		count = 0
-		for feed in self.feeds:
-			if feed["type"] == "user":
-				name = feed["feed"]
-				name = name[name.rfind ("/") + 1:]
-				if name == "reading-list":
-					count = int(feed["count"])
+        doc = xml.dom.minidom.parseString(data)
+        elist = doc.childNodes[0].getElementsByTagName("list")[0]
+        for e2 in elist.getElementsByTagName("object"):
+            processObject (e2)
 
-		return count
+    def refreshInfo(self):
+        self.parseDocument (self.sendRequest().read())
 
+    def getTotalUnread(self):
+        count = 0
+        for feed in self.feeds:
+            if feed["type"] == "user":
+                name = feed["feed"]
+                name = name[name.rfind ("/") + 1:]
+                if name == "reading-list":
+                    count = int(feed["count"])
+
+        return count

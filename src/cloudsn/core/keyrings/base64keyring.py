@@ -8,14 +8,14 @@ class Base64Keyring(Keyring):
 
     def get_id(self):
         return "base64"
-        
+
     def get_name(self):
         return _("Base64 encoding")
 
     def remove_credentials(self, acc):
         del(acc["username"])
         del(acc["password"])
-        
+
     def store_credentials(self, acc, credentials):
         try:
             logger.debug("Storing base64 credentials for account: %s" % (acc.get_name()))
@@ -31,8 +31,7 @@ class Base64Keyring(Keyring):
                 base64.decodestring(acc["password"]))
         except Exception, e:
             raise KeyringException("Cannot decode the base64 username or password for account %s" % (acc.get_name()), e)
-            
+
     def __check_valid(self, acc):
         if not "username" in acc or not "password" in acc:
             raise KeyringException("The account %s has not a username or password configured" % (acc.get_name()))
-

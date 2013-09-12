@@ -28,15 +28,15 @@ class TwitterProvider(IdenticaProvider):
         auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
         return tweepy.API(auth)
-        
+
     def get_account_data_widget (self, account=None):
         self.conf_widget = TwitterPrefs(account, self)
         return self.conf_widget.load()
 
     def set_account_data_from_widget(self, account_name, widget, account=None):
         return self.conf_widget.set_account_data(account_name)
-        
-        
+
+
 class TwitterPrefs:
 
     def __init__(self, account, provider):
@@ -50,11 +50,11 @@ class TwitterPrefs:
         self.box = self.builder.get_object("container")
         self.permission_button = self.builder.get_object("permission_button")
         self.pin_entry = self.builder.get_object("pin_entry")
-        
+
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         auth_url = self.auth.get_authorization_url()
         self.permission_button.set_uri(auth_url)
-        
+
         self.builder.connect_signals(self)
         if self.account:
             #Do not support editting
@@ -78,4 +78,3 @@ class TwitterPrefs:
         self.account.set_credentials(credentials)
 
         return self.account
-        

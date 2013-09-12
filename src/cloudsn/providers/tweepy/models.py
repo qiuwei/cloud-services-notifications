@@ -311,4 +311,3 @@ class ModelFactory(object):
 
     json = JSONModel
     ids = IDModel
-

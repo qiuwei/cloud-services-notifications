@@ -46,7 +46,7 @@ class ProviderManager:
 
     def __init__(self):
         if ProviderManager.__default:
-           raise ProviderManager.__default
+            raise ProviderManager.__default
 
     @staticmethod
     def get_instance():
@@ -78,4 +78,3 @@ class ProviderManager:
             if prov.get_name() == name:
                 return prov
         return None
-

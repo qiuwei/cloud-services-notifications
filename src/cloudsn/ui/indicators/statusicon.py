@@ -114,7 +114,7 @@ class StatusIconIndicator (Indicator):
                            self.statusIcon, 1, Gtk.get_current_event_time())
 
     def quit_cb(self, widget, data = None):
-       Gtk.main_quit()
+        Gtk.main_quit()
 
     def about_cb (self, widget, data = None):
         about.show_about_dialog()
@@ -127,4 +127,3 @@ class StatusIconIndicator (Indicator):
                            self.statusIcon, 3, time)
     def scale_pixbuf (self, pix):
         return pix.scale_simple(16,16,GdkPixbuf.InterpType.BILINEAR)
-

@@ -125,4 +125,3 @@ class ItemIterator(BaseIterator):
         self.page_index -= 1
         self.count -= 1
         return self.current_page[self.page_index]
-

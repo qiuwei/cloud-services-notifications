@@ -24,4 +24,3 @@ def debug(enable=True, level=1):
 
     import httplib
     httplib.HTTPConnection.debuglevel = level
-

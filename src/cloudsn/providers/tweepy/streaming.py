@@ -212,4 +212,3 @@ class Stream(object):
         if self.running is False:
             return
         self.running = False
-
